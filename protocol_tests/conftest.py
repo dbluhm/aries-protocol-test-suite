@@ -7,10 +7,11 @@
 """
 
 import asyncio
-import json
-import os
+import hashlib
 
 import pytest
+from ariespython import did
+
 from agent_core.compat import create_task
 from . import TestingAgent
 
@@ -46,3 +47,25 @@ async def agent(config):
 
     await test_suite_agent.shutdown()
     task.cancel()
+
+
+@pytest.fixture(scope='session')
+async def test_id(config, agent):
+    """ Generate the test suite and subject identities. """
+    test_did, test_vk = await did.create_and_store_my_did(
+        agent.wallet_handle,
+        {'seed': hashlib.sha256(b'aries-protocol-test-suite').hexdigest()}
+    )
+
+    subject_did, subject_vk = await did.create_and_store_my_did(
+        agent.wallet_handle,
+        {'seed': hashlib.sha256(b'aries-protocol-test-subject').hexdigest()}
+    )
+
+    await did.set_did_metadata(
+        agent.wallet_handle,
+        subject_did,
+        {'service': config['subject']['service']}
+    )
+
+    yield test_did, test_vk, subject_did, subject_vk

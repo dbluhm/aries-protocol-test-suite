@@ -16,46 +16,12 @@ from agent_core.mtc import (
 from . import MessageSchema
 
 
-async def static_connection(agent, static_connection_info):
-    """ Set up connection to static agent """
-    their_did = static_connection_info['did']
-    their_vk = static_connection_info['verkey']
-    their_endpoint = static_connection_info['endpoint']
-
-    await did.store_their_did(
-        agent.wallet_handle,
-        {
-            'did': their_did,
-            'verkey': their_vk
-        }
-    )
-    await did.set_did_metadata(
-        agent.wallet_handle,
-        their_did,
-        {
-            'service': {
-                'serviceEndpoint': their_endpoint
-            }
-        }
-    )
-    await did.map_key_to_did(agent.wallet_handle, their_vk, their_did)
-
-    my_did, my_vk = await did.create_and_store_my_did(
-        agent.wallet_handle,
-        {'seed': '00000000000000000000000000000000'}
-    )
-    await did.map_key_to_did(agent.wallet_handle, my_vk, my_did)
-
-    return my_did, my_vk, their_did, their_vk
-
-
 @pytest.mark.asyncio
 @pytest.mark.features('simple')
-async def test_simple_messaging(config, agent):
+async def test_simple_messaging(config, agent, test_id):
     """ Show simple messages being passed to and from tested agent """
 
-    _my_did, my_vk, their_did, their_vk = \
-        await static_connection(agent, config['static_connection'])
+    _my_did, my_vk, their_did, their_vk = test_id
 
     expected_schema = MessageSchema({
         '@type': 'test/protocol/1.0/test',
