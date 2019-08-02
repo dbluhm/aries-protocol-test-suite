@@ -33,7 +33,7 @@ class SuiteConfig(AgentConfig):
     __slots__ = (
         'endpoint',
         'features',
-        'static_connection',
+        'subject',
         'logging',
     )
 
@@ -41,14 +41,15 @@ class SuiteConfig(AgentConfig):
         **AgentConfig.SCHEMA,
         'endpoint': str,
         'features': [str],
+        Optional('subject'): {
+            Optional('service'): {
+                Optional('routingKeys', default=[]): [str],
+                'serviceEndpoint': str,
+            }
+        },
         Optional('logging'): {
             'active_logs': [str],
             'log_level': int,
-        },
-        Optional('static_connection'): {
-            'did': str,
-            'verkey': str,
-            'endpoint': str
         },
     }
 

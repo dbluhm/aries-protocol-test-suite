@@ -61,7 +61,7 @@ options = {port = 3000}
 
 active_logs = [
 #'protocol_tests',
-#'indy'
+'indy'
 ]
 
 # Set the default log level
@@ -76,13 +76,12 @@ active_logs = [
 # DEBUG            | 10
 # (INDY-SDK) TRACE | 5
 # NOTSET           | 0
-log_level = 30
+log_level = 40
 
 
-[config.static_connection]
-# Set these configuration options if you want to run the "simple_messaging"
-# tests found in protocol_tests/test_simple_messaging.py
+# Test Subject configuration
+[config.subject]
 
-did="<did of static agent>"
-verkey="<verkey of static agent>"
-endpoint="<url of static agent endpoint>"
+# Configure service information for the subject
+# "routingKeys" can also be specified
+service = { serviceEndpoint = "http://localhost:3001" }
