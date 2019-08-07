@@ -6,6 +6,7 @@ from agent_core.message import Message
 from .. import MessageSchema
 
 CONNECTION_ACK = 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/connections/1.0/ack'
+
 DIDDOC_SCHEMA = MessageSchema({
     "@context": "https://w3id.org/did/v1",
     "id": str,
@@ -24,7 +25,7 @@ DIDDOC_SCHEMA = MessageSchema({
     }],
 })
 
-CREATE_INVITE = 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/connections/1.0/create_invitation'
+CREATE_INVITE = 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/testing/1.0/create_invitation'
 CREATE_INVITE_SCHEMA = MessageSchema({
     '@type': CREATE_INVITE,
     '@id': str
