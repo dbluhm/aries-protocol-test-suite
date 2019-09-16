@@ -33,7 +33,7 @@ async def test_connection_started_by_tested_agent(config, agent, test_id):
     print('\nRequesting creation of new invite...')
     await agent.send(
         Message({
-            '@type': CREATE_INVITE
+            '@type': CREATE_INVITE  # testing/1.0/create_invitation
         }),
         subject_vk,
         from_key=test_vk,
@@ -116,7 +116,7 @@ async def test_connection_started_by_tested_agent(config, agent, test_id):
 async def test_connection_started_by_suite(config, agent, test_id):
     """ Test a connection as started by the suite. """
     label = 'test-suite-connection-started-by-suite'
-    test_did, test_vk, subject_did, subject_vk = test_id
+    _test_did, test_vk, _subject_did, subject_vk = test_id
 
     connection_key = await did.create_key(agent.wallet_handle, {})
 
@@ -136,7 +136,7 @@ async def test_connection_started_by_suite(config, agent, test_id):
     REQUEST_SCHEMA.validate(request)
     print("\nReceived request:\n", request.pretty_print())
 
-    (_, their_vk, their_endpoint) = (
+    (_their_did, their_vk, their_endpoint) = (
         request['connection']['DIDDoc']['publicKey'][0]['controller'],
         request['connection']['DIDDoc']['publicKey'][0]['publicKeyBase58'],
         request['connection']['DIDDoc']['service'][0]['serviceEndpoint']
