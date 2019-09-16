@@ -117,11 +117,12 @@ def pytest_configure(config):
         "ordering tests. Higher numbers occur first."
     )
 
-    # Override default terminal reporter for better test output
-    reporter = config.pluginmanager.get_plugin('terminalreporter')
-    agent_reporter = AgentTerminalReporter(config, sys.stdout)
-    config.pluginmanager.unregister(reporter)
-    config.pluginmanager.register(agent_reporter, 'terminalreporter')
+    if config.getoption('capture') == 'no':
+        # Override default terminal reporter for better test output
+        reporter = config.pluginmanager.get_plugin('terminalreporter')
+        agent_reporter = AgentTerminalReporter(config, sys.stdout)
+        config.pluginmanager.unregister(reporter)
+        config.pluginmanager.register(agent_reporter, 'terminalreporter')
 
     # Compile SELECT_REGEX if given
     select_regex = config.getoption('select')
