@@ -7,22 +7,25 @@ from .. import MessageSchema
 
 CONNECTION_ACK = 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/connections/1.0/ack'
 
+SERVICE_SCHEMA = MessageSchema({
+    "id": str,
+    "type": "IndyAgent",
+    "recipientKeys": [str],
+    Optional("routingKeys"): [str],
+    "serviceEndpoint": str,
+})
+PUBLICKEY_SCHEMA = MessageSchema({
+    "id": str,
+    "type": "Ed25519VerificationKey2018",
+    "controller": str,
+    "publicKeyBase58": str
+})
 DIDDOC_SCHEMA = MessageSchema({
     "@context": "https://w3id.org/did/v1",
     "id": str,
-    "publicKey": [{
-        "id": str,
-        "type": "Ed25519VerificationKey2018",
-        "controller": str,
-        "publicKeyBase58": str
-    }],
-    "service": [{
-        "id": str,
-        "type": "IndyAgent",
-        "recipientKeys": [str],
-        "routingKeys": [str],
-        "serviceEndpoint": str,
-    }],
+    "publicKey": [PUBLICKEY_SCHEMA],
+    "service": [SERVICE_SCHEMA],
+    Optional("authentication"): [dict],
 })
 
 CREATE_INVITE = 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/testing/1.0/create_invitation'
@@ -37,7 +40,7 @@ INVITE_SCHEMA = MessageSchema({
     '@id': str,
     'label': str,
     'recipientKeys': [str],
-    'routingKeys': [str],
+    Optional('routingKeys'): [str],
     'serviceEndpoint': str,
 })
 
@@ -101,7 +104,7 @@ def build_invite(label: str, connection_key: str, endpoint: str) -> str:
     })
 
 
-def invite_to_url(invite: Message) -> str:
+def invite_to_url(invite: Message, endpoint: str) -> str:
     b64_invite = base64.urlsafe_b64encode(
         bytes(invite.serialize(), 'utf-8')
     ).decode('ascii')

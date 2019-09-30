@@ -88,7 +88,7 @@ async def test_connection_started_by_suite(config, agent):
         label,
         connection_key,
         config.endpoint
-    ))
+    ), config.endpoint)
 
     print("\n\nInvitation encoded as URL: ", invite_str)
 

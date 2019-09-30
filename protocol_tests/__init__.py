@@ -4,8 +4,9 @@ import base64
 import json
 import struct  # TODO don't use struct
 import time
+import warnings
 
-from schema import Schema
+from schema import Schema, Hook
 from ariespython import crypto
 
 from agent_core.message import Message
@@ -13,10 +14,35 @@ from agent_core.compat import create_task
 from agent_core import Agent
 
 
+class MessageWarning(Warning):
+    """ Used when warning about a message or its attributes. """
+
+
+class UnrecognizedKey(Hook):
+    """Schema hook for warning on unrecognized keys."""
+
+    def __init__(self, *args, **kwargs):
+        kwargs["handler"] = lambda key, from_, *_args: \
+            warnings.warn(
+                "`{}` is not a recognized attribute in {}. {}".format(
+                    key, from_, self._error or ""
+                ),
+                category=MessageWarning,
+            )
+
+        super(UnrecognizedKey, self).__init__(*args, **kwargs)
+
+
 class MessageSchema():  # pylint: disable=too-few-public-methods
     """ Wrap Schema for better message validation experience """
     def __init__(self, schema_dict):
-        self._schema = Schema(schema_dict)
+        self._schema = Schema(
+            {
+                **schema_dict,
+                UnrecognizedKey(str): object,
+            },
+            ignore_extra_keys=True
+        )
 
     def validate(self, msg: Message):
         """ Validate message, storing defaults inserted by validation. """
