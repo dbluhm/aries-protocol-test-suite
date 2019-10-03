@@ -84,13 +84,15 @@ async def test_connection_started_by_suite(config, agent):
 
     connection_key = await did.create_key(agent.wallet_handle, {})
 
-    invite_str = invite_to_url(build_invite(
+    invite = build_invite(
         label,
         connection_key,
         config.endpoint
-    ), config.endpoint)
+    )
+    invite_str = invite_to_url(invite, config.endpoint)
 
-    print("\n\nInvitation encoded as URL: ", invite_str)
+    print("\n\nInvitation encoded as URL:", invite_str)
+    print("Invitation as JSON:", invite.serialize())
 
     print("Awaiting request from tested agent...")
     request = await agent.expect_message(REQUEST, 30)
